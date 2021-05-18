@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 from salesforce_api import Salesforce
 import json
 
-sf = Salesforce(username='matias@kforce.com', password='5Qnc6ShzbE8B9nr', security_token='nVV0EInmYNhSSDAVMMqsxaKJ')
+#sf = Salesforce(username='matias@kforce.com', password='5Qnc6ShzbE8B9nr', security_token='nVV0EInmYNhSSDAVMMqsxaKJ')
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
