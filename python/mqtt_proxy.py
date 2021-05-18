@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 from salesforce_api import Salesforce
 import json
 
-#sf = Salesforce(username='matias@kforce.com', password='5Qnc6ShzbE8B9nr', security_token='nVV0EInmYNhSSDAVMMqsxaKJ')
+sf = Salesforce(username='matias@kforce.com', password='6tgAwEYL6Vj6UDS', security_token='qy5IOYAOupD2lmO3jXCJs52N7')
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -14,6 +14,8 @@ def on_message(client, userdata, msg):
     data = msg.payload
     data = data.decode('utf8').replace("'", '"')
     print(data)
+    plant_id = data
+    
     #TODO: Leer PlantID
     # TODO: Hacer SOQL a Salesforce para obtener el dato de Moist
     # TODO: Publish el dato para que lo lea el dispositivo
