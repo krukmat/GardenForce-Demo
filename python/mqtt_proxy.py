@@ -14,17 +14,15 @@ def on_message(client, userdata, msg):
     data = msg.payload
     data = data.decode('utf8').replace("'", '"')
     print(data)
-    plant_id = data
-    
-    #TODO: Leer PlantID
-    # TODO: Hacer SOQL a Salesforce para obtener el dato de Moist
-    # TODO: Publish el dato para que lo lea el dispositivo
-    #try:
-    #    result = sf.sobjects.Sensor__c.insert({'Date__c': data['created_at'], 'External_id__c': data['entry_id'], 'value__c':  data['field1'], 
-    #                                           'channel__c': data['channel_id']})
-    #catch:
-    #    pass
-    #print(result)        
+    if  "PLANT" in data:
+        plant_id = data
+        #try:
+        result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
+        moist = int(result[0]['moist__c'])
+        client.publish("HPIbCG0C72lcw6g/input", moist)
+        #catch:
+        #    pass
+        #print(moist)        
  
 client = mqtt.Client()
 client.on_connect = on_connect
