@@ -14,7 +14,11 @@ def on_message(client, userdata, msg):
     data = msg.payload
     data = data.decode('utf8').replace("'", '"')
     print(data)
-    if  "PLANT" in data:
+    if  ";" in data:
+        #TODO: Caso donde se envia PlantId;valor de humedad
+        parameters = data.split(";")
+        result = sf.sobjects.Plant__c.upsert("PlantId__c", parameters[0], {"current__c": parameters[1]})
+    else:
         plant_id = data
         try:
             result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")

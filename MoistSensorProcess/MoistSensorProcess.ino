@@ -19,6 +19,9 @@ const char *mqtt_ip_topic_subscribe = "HPIbCG0C72lcw6g/input";
 char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn"; 
 char msg[12];
 int moistValue = 3200;
+int sensorStatus = 0;
+
+TaskHandle_t taskSendStatus;
 
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
@@ -70,6 +73,17 @@ void bootUp(){
   mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
 }
 
+void taskSendStatusMethod( void * parameter) {
+  String statusMsg;
+  for(;;) {
+    mqttLoop();
+    statusMsg = plantId+";"+String(sensorStatus);
+    statusMsg.toCharArray(msg,statusMsg.length()+1);
+    mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
+    delay(60000);
+  }
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -93,6 +107,15 @@ void setup() {
   mqttIPClient.setServer(mqtt_ip, mqtt_ip_port);
   mqttIPClient.setCallback(mqttCallback);
   bootUp();
+
+   xTaskCreatePinnedToCore(
+      taskSendStatusMethod, /* Function to implement the task */
+      "taskSendStatus", /* Name of the task */
+      10000,  /* Stack size in words */
+      NULL,  /* Task input parameter */
+      0,  /* Priority of the task */
+      &taskSendStatus,  /* Task handle. */
+      0); /* Core where the task should run */
 }
 
 void mqttLoop(){
@@ -105,9 +128,9 @@ void mqttLoop(){
 void loop() {
   mqttLoop();
   // put your main code here, to run repeatedly:
-  int value = analogRead(34);
+  sensorStatus = analogRead(34);
   // TODO: Si el valor es  == 4095 => Mandar 1 sino 0
-  if (value >= moistValue){
+  if (sensorStatus >= moistValue){
     digitalWrite(14, 0);
   } else {
     digitalWrite(14, 1);
