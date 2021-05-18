@@ -58,15 +58,16 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
   }
   incoming.trim();
   Serial.println("Mensaje -> " + incoming); 
-  moistValue = incoming.toInt();
+  if (incoming.toInt() > 0)
+    moistValue = incoming.toInt();
 }
 
 void bootUp(){
-  plantId.toCharArray(msg,plantId.length());
+  plantId.toCharArray(msg,plantId.length()+1);
   if (!mqttIPClient.connected()) {
       mqttReconnect();
    }
-  mqttIPClient.publish(mqtt_ip_topic,msg);
+  mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
 }
 
 void setup() {
@@ -111,6 +112,6 @@ void loop() {
   } else {
     digitalWrite(14, 1);
   }
-  Serial.println(value);
+  //Serial.println(value);
   delay(100);
 }
