@@ -16,13 +16,14 @@ def on_message(client, userdata, msg):
     print(data)
     if  "PLANT" in data:
         plant_id = data
-        #try:
-        result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
-        moist = int(result[0]['moist__c'])
-        client.publish("HPIbCG0C72lcw6g/input", moist)
-        #catch:
-        #    pass
-        #print(moist)        
+        try:
+            result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
+            moist = int(result[0]['moist__c'])
+            print(moist)
+            client.publish("HPIbCG0C72lcw6g/input", moist)
+        catch:
+            print("Error")
+                
  
 client = mqtt.Client()
 client.on_connect = on_connect
