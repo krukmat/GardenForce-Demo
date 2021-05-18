@@ -7,7 +7,7 @@ import json
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("htO9wfUxA50uzDS/input")
+    client.subscribe("HPIbCG0C72lcw6g/input")
 
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
@@ -27,6 +27,6 @@ def on_message(client, userdata, msg):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.username_pw_set(username="hGR2rL1latTuCnB", password="ASJ5c61zVvtuib7")
+client.username_pw_set(username="d2uNYOZq2J5uL3T", password="DwqGBXa7LuVlgBG")
 client.connect("ioticos.org", 1883, 60)
 client.loop_forever()
