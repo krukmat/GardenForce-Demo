@@ -12,8 +12,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
     data = msg.payload
-    #my_json = data.decode('utf8').replace("'", '"')
-    #data = json.loads(my_json)
+    data = data.decode('utf8').replace("'", '"')
     print(data)
     #TODO: Leer PlantID
     # TODO: Hacer SOQL a Salesforce para obtener el dato de Moist
