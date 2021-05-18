@@ -19,14 +19,15 @@ def on_message(client, userdata, msg):
         parameters = data.split(";")
         result = sf.sobjects.Plant__c.upsert("PlantId__c", parameters[0], {"current__c": parameters[1]})
     else:
-        plant_id = data
-        try:
-            result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
-            moist = int(result[0]['moist__c'])
-            print(moist)
-            client.publish("HPIbCG0C72lcw6g/input", moist)
-        except:
-            print("Error")
+        if "PLANT" in data:
+            plant_id = data
+            try:
+                result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
+                moist = int(result[0]['moist__c'])
+                print(moist)
+                client.publish("HPIbCG0C72lcw6g/input", moist)
+            except:
+                print("Error")
                 
  
 client = mqtt.Client()
