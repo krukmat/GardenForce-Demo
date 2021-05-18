@@ -21,7 +21,7 @@ def on_message(client, userdata, msg):
             moist = int(result[0]['moist__c'])
             print(moist)
             client.publish("HPIbCG0C72lcw6g/input", moist)
-        catch:
+        except:
             print("Error")
                 
  
