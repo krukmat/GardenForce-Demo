@@ -28,11 +28,16 @@ def on_message(client, userdata, msg):
                 client.publish("HPIbCG0C72lcw6g/input", moist)
             except:
                 print("Error")
-                
- 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.username_pw_set(username="d2uNYOZq2J5uL3T", password="DwqGBXa7LuVlgBG")
-client.connect("ioticos.org", 1883, 60)
+
+def mqtt_publish(client, message):
+    client.publish("HPIbCG0C72lcw6g/input", message)
+
+def connect_mqtt():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.username_pw_set(username="d2uNYOZq2J5uL3T", password="DwqGBXa7LuVlgBG")
+    client.connect("ioticos.org", 1883, 60)
+    return client
+client = connect_mqtt()
 client.loop_forever()
