@@ -29,7 +29,7 @@ def on_message(client, userdata, msg):
                     moist = int(result[0]['moist__c'])
                     print(moist)
                     message = plant_id + ";"+ str(moist) + ";MQTT"
-                    client.publish("HPIbCG0C72lcw6g/input", moist)
+                    client.publish("HPIbCG0C72lcw6g/input", message)
                 except:
                     print("Error")
 
