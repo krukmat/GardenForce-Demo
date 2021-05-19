@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from flask import Flask
 import mqtt_proxy
 app = Flask(__name__)
