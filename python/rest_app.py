@@ -7,8 +7,10 @@ app = Flask(__name__)
 
 @app.route('/setup')
 def index():
-    message = request.args.get('moist', '')
-    if message:
+    value = request.args.get('moist', '')
+    plantid = request.args.get('plant_id')
+    message = plantid + ";" + moist + ";MQTT"
+    if value and plantid:
         client = mqtt_proxy.connect_mqtt()
         mqtt_proxy.mqtt_publish(client, message)
     return 'OK'

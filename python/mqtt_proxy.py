@@ -14,20 +14,24 @@ def on_message(client, userdata, msg):
     data = msg.payload
     data = data.decode('utf8').replace("'", '"')
     print(data)
-    if  ";" in data:
+    # Evitar el loopback de MQTT
+    if  ";MQTT" in data == False:
         #TODO: Caso donde se envia PlantId;valor de humedad
-        parameters = data.split(";")
-        result = sf.sobjects.Plant__c.upsert("PlantId__c", parameters[0], {"current__c": parameters[1]})
-    else:
-        if "PLANT" in data:
-            plant_id = data
-            try:
-                result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
-                moist = int(result[0]['moist__c'])
-                print(moist)
-                client.publish("HPIbCG0C72lcw6g/input", moist)
-            except:
-                print("Error")
+        if ";" in data:
+            parameters = data.split(";")
+            result = sf.sobjects.Plant__c.upsert("PlantId__c", parameters[0], {"current__c": parameters[1]})
+        else:
+            # Caso que se recibe desde el ESP-32 para que se devuelva el valor desde SF
+            if "PLANT" in data:
+                plant_id = data
+                try:
+                    result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
+                    moist = int(result[0]['moist__c'])
+                    print(moist)
+                    message = plant_id + ";"+ str(moist) + ";MQTT"
+                    client.publish("HPIbCG0C72lcw6g/input", moist)
+                except:
+                    print("Error")
 
 def mqtt_publish(client, message):
     client.publish("HPIbCG0C72lcw6g/input", message)
