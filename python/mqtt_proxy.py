@@ -39,5 +39,3 @@ def connect_mqtt():
     client.username_pw_set(username="d2uNYOZq2J5uL3T", password="DwqGBXa7LuVlgBG")
     client.connect("ioticos.org", 1883, 60)
     return client
-client = connect_mqtt()
-client.loop_forever()
