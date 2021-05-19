@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import sys, os
+sys.path.append('/root/GardenForce-Demo/python')
 from flask import Flask
 import mqtt_proxy
 app = Flask(__name__)
