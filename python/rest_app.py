@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys, os
 sys.path.append('/rest /var/www/html/GardenForce-Demo/python/')
-from flask import Flask
+from flask import Flask, request
 import mqtt_proxy
 app = Flask(__name__)
 
