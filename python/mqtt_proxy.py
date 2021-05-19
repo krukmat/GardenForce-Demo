@@ -15,7 +15,7 @@ def on_message(client, userdata, msg):
     data = data.decode('utf8').replace("'", '"')
     print(data)
     # Evitar el loopback de MQTT
-    if  ";MQTT" in data == False:
+    if  not(";MQTT" in data):
         #TODO: Caso donde se envia PlantId;valor de humedad
         if ";" in data:
             parameters = data.split(";")

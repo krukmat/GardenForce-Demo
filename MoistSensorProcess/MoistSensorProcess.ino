@@ -80,7 +80,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
   incoming.trim();
   Serial.println("Mensaje -> " + incoming); 
 
-  if (getValue(incoming,';',0) == plantId){
+  if (getValue(incoming,';',0) == plantId && getValue(incoming,';',2) == "MQTT"){
     if (getValue(incoming,';',1).toInt() > 0)
         moistValue = getValue(incoming,';',1).toInt();
     
