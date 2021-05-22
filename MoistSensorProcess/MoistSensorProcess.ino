@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <PubSubClient.h>
+#include <esp_now.h>
 
 
 const String plantId = "PLANT_1";
@@ -20,6 +21,14 @@ char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn";
 char msg[12];
 int moistValue = 3200;
 int sensorStatus = 0;
+
+// 10:52:1C:62:DB:60
+uint8_t broadcastAddress[] = {0x10, 0x52, 0x1C, 0x62, 0xDB, 0x60};
+typedef struct shoot_on_demand {
+  bool shoot;
+  String deviceId;
+};
+shoot_on_demand esp_now_data;
 
 TaskHandle_t taskSendStatus;
 
@@ -69,6 +78,17 @@ String getValue(String data, char separator, int index)
   return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
+void espRequestScreenshotToCam(){
+  esp_now_data.shoot = true;
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &esp_now_data, sizeof(esp_now_data));
+  if (result == ESP_OK) {
+    Serial.println("Sent with success");
+  }
+  else {
+    Serial.println("Error sending the data");
+  }
+}
+
 void mqttCallback(char* topic, byte* payload, unsigned int length){
   String incoming = "";
   Serial.print("Mensaje recibido desde -> ");
@@ -82,8 +102,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
 
   if (getValue(incoming,';',0) == plantId && getValue(incoming,';',2) == "MQTT"){
     if (getValue(incoming,';',1).toInt() > 0)
-        moistValue = getValue(incoming,';',1).toInt();
-    
+        moistValue = getValue(incoming,';',1).toInt();    
+    espRequestScreenshotToCam();
   }
 }
 
@@ -106,6 +126,13 @@ void taskSendStatusMethod( void * parameter) {
   }
 }
 
+// callback when data is sent
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -114,6 +141,23 @@ void setup() {
   digitalWrite(14, 1); // Disable by default
   
   Serial.println("The device started, now you can pair it with bluetooth!");
+  WiFi.mode(WIFI_AP_STA);
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+  
+  esp_now_register_send_cb(OnDataSent);
+  esp_now_peer_info_t peerInfo;
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
+  
+  //Add peer
+  if (esp_now_add_peer(&peerInfo) != ESP_OK){
+    Serial.println("Failed to add peer");
+    return;
+  }
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -124,6 +168,7 @@ void setup() {
   Serial.println("WiFi connected");
 
   Serial.print("SensorForce Ready!");
+  Serial.println(WiFi.macAddress());
   Serial.print(WiFi.localIP());
 
   mqttIPClient.setServer(mqtt_ip, mqtt_ip_port);
