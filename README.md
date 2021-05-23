@@ -17,6 +17,8 @@ The stack selected:
     * Arduino IDE
     * Salesforce:
          * Custom Object: Plant
+## General Schema
+![Schematics](https://github.com/krukmat/CentralAlarmForce/blob/390de5740e9e64eadbeb8ba5ed9c90c8c3ecb865/Arduino/images/Schematics.png)
 ##  Hardware
 ![Schematics](https://github.com/krukmat/GardenForce-Demo/blob/dab6476364e0883ef06dd59ba2e45e5e8e7263f6/images/gardenforce-concept.jpg)
 
