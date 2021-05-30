@@ -25,3 +25,4 @@ The stack selected:
 ## Salesforce
 ![Config](https://github.com/krukmat/GardenForce-Demo/blob/dab6476364e0883ef06dd59ba2e45e5e8e7263f6/images/salesforce-config.png)
 ![History](https://github.com/krukmat/GardenForce-Demo/blob/dab6476364e0883ef06dd59ba2e45e5e8e7263f6/images/salesforce-history.png)
+![Report](https://github.com/krukmat/GardenForce-Demo/blob/e80d5873ee5d96a9f12610b9f7f7e4d635eeb690/images/report.png)
