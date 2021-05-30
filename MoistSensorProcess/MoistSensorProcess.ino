@@ -122,7 +122,7 @@ void taskSendStatusMethod( void * parameter) {
     statusMsg = plantId+";"+String(sensorStatus);
     statusMsg.toCharArray(msg,statusMsg.length()+1);
     mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
-    delay(60000);
+    delay(180000);
   }
 }
 
