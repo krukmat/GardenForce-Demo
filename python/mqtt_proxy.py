@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import paho.mqtt.client as mqtt
 from salesforce_api import Salesforce
-import * from sf_creds
+import SF_USER, SF_PASSWORD, SF_ACCESS_TOKEN from sf_creds
 import json
 
 sf = Salesforce(username=SF_USER, password=SF_PASSWORD, security_token=SF_ACCESS_TOKEN)
