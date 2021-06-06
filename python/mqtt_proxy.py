@@ -29,7 +29,7 @@ def on_message(client, userdata, msg):
                     result = sf.sobjects.query("SELECT moist__c FROM Plant__c WHERE PlantId__c = '"+plant_id+"'")
                     moist = int(result[0]['moist__c'])
                     print(moist)
-                    message = plant_id + ";"+ str(moist) + ";MQTT"
+                    message = plant_id + ";moist;"+ str(moist) + ";MQTT"
                     client.publish("HPIbCG0C72lcw6g/input", message)
                 except:
                     print("Error")

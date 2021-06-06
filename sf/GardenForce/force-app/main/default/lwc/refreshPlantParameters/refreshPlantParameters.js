@@ -43,16 +43,17 @@ export default class RefreshPlantParameters extends LightningElement {
         updateMoist({plant: plantLocal, parameter: parameter} ).then(response => {
             // TODO: MEnsaje todo OK
             console.info('Success!!');
+            parameter = this.refresh();
+            updatePlantReadMs({plant: plantLocal, parameter: parameter} ).then(response => {
+                // TODO: MEnsaje todo OK
+                console.info('Success!!');
+            }).catch(error => {
+                console.log('Error: ' +error.body.message);
+            });
         }).catch(error => {
             console.log('Error: ' +error.body.message);
         });
-        parameter = this.refresh();
-        updatePlantReadMs({plant: plantLocal, parameter: parameter} ).then(response => {
-            // TODO: MEnsaje todo OK
-            console.info('Success!!');
-        }).catch(error => {
-            console.log('Error: ' +error.body.message);
-        });
+        
 
     }
 }
