@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : Matias Kruk
  * @group             : 
- * @last modified on  : 05-22-2021
+ * @last modified on  : 06-06-2021
  * @last modified by  : Matias Kruk
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -16,6 +16,22 @@ public with sharing class RefreshPlantParametersCallout {
          
         // Provide the Named Credentials
         request.setEndpoint('http://gardenforce.krukforce.com/rest/setup?plant_id='+plant+'&moist='+String.valueOf(parameter));
+        request.setMethod('GET');        
+        System.debug(request.getEndpoint());
+        HttpResponse response = http.send(request);
+        if (response.getStatusCode() == 200) {
+            return response.getBody();
+        }
+        return null;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String updatePlantReadMs(String plant, Integer parameter) {
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+         
+        // Provide the Named Credentials
+        request.setEndpoint('http://gardenforce.krukforce.com/rest/setup?plant_id='+plant+'&read_ms='+String.valueOf(parameter));
         request.setMethod('GET');        
         System.debug(request.getEndpoint());
         HttpResponse response = http.send(request);

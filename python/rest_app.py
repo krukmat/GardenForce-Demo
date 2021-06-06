@@ -9,7 +9,7 @@ app = Flask(__name__)
 def index():
     value = request.args.get('moist', '')
     parameter = 'moist'
-    if !value:
+    if  value == '':
         value = request.args.get('read_ms', '')
         parameter = 'read_ms'
         
