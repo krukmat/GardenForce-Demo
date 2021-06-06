@@ -20,6 +20,7 @@ const char *mqtt_ip_topic_subscribe = "HPIbCG0C72lcw6g/input";
 char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn"; 
 char msg[12];
 int moistValue = 3200;
+int readMs = 180000;
 int sensorStatus = 0;
 
 // 10:52:1C:62:DB:60
@@ -100,9 +101,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
   incoming.trim();
   Serial.println("Mensaje -> " + incoming); 
 
-  if (getValue(incoming,';',0) == plantId && getValue(incoming,';',2) == "MQTT"){
-    if (getValue(incoming,';',1).toInt() > 0)
-        moistValue = getValue(incoming,';',1).toInt();    
+  if (getValue(incoming,';',0) == plantId && getValue(incoming,';',3) == "MQTT"){
+    if (getValue(incoming,';',2).toInt() > 0){
+       String parameter = getValue(incoming,';',1);
+       if (parameter == "moist")
+          moistValue = getValue(incoming,';',2).toInt();
+       if (parameter == "read_ms")
+          readMs = getValue(incoming,';',2).toInt();
+      
+    }
     espRequestScreenshotToCam();
   }
 }
@@ -122,7 +129,7 @@ void taskSendStatusMethod( void * parameter) {
     statusMsg = plantId+";"+String(sensorStatus);
     statusMsg.toCharArray(msg,statusMsg.length()+1);
     mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
-    delay(180000);
+    delay(readMs);
   }
 }
 
@@ -202,6 +209,5 @@ void loop() {
   } else {
     digitalWrite(14, 1);
   }
-  Serial.println(value);
   delay(100);
 }
