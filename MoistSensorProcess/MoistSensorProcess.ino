@@ -202,6 +202,6 @@ void loop() {
   } else {
     digitalWrite(14, 1);
   }
-  //Serial.println(value);
+  Serial.println(value);
   delay(100);
 }

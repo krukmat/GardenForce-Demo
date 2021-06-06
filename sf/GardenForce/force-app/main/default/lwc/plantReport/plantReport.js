@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : Matias Kruk
  * @group             : 
- * @last modified on  : 05-29-2021
+ * @last modified on  : 05-30-2021
  * @last modified by  : Matias Kruk
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -40,7 +40,7 @@ export default class PlantReport extends LightningElement {
                 yAxes: [{
                     ticks: {
                         min: 0,
-                        stepSize: 200
+                        stepSize: 100
                     }
                 }],
                 xAxes: [{
