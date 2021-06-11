@@ -3,28 +3,12 @@
 #include <HTTPClient.h>
 #include <PubSubClient.h>
 #include <esp_now.h>
+#include "GardenForce_consts.h"
 
-
-const String plantId = "PLANT_1";
-const char* ssid = "MIWIFI_5G_2jJ5_EXT";
-const char* password = "xvFYmqRv";
 
 WiFiClient mqttIPClientWifi;
 PubSubClient mqttIPClient( mqttIPClientWifi );
-const char* mqtt_ip = "ioticos.org";
-const int mqtt_ip_port = 1883;
-const char* mqtt_ip_user = "d2uNYOZq2J5uL3T";
-const char* mqtt_ip_password = "DwqGBXa7LuVlgBG";
-const char *mqtt_ip_topic = "HPIbCG0C72lcw6g/output";
-const char *mqtt_ip_topic_subscribe = "HPIbCG0C72lcw6g/input";
-char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn"; 
-char msg[12];
-int moistValue = 3200;
-int readMs = 180000;
-int sensorStatus = 0;
 
-// 10:52:1C:62:DB:60
-uint8_t broadcastAddress[] = {0x10, 0x52, 0x1C, 0x62, 0xDB, 0x60};
 typedef struct shoot_on_demand {
   bool shoot;
   String deviceId;
@@ -56,7 +40,7 @@ void mqttReconnect() {
       Serial.print("falló :( con error -> ");
       Serial.print(mqttIPClient.state());
       Serial.println(" Intentamos de nuevo en 5 segundos");
-      delay(5000);
+      delay(MQTT_RETRYMS);
     }
   }
 }
@@ -143,9 +127,9 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(34,INPUT);
-  pinMode(14,OUTPUT);
-  digitalWrite(14, 1); // Disable by default
+  pinMode(MOIST_SENSOR,INPUT);
+  pinMode(RELAY,OUTPUT);
+  digitalWrite(RELAY, 1); // Disable by default
   
   Serial.println("The device started, now you can pair it with bluetooth!");
   WiFi.mode(WIFI_AP_STA);
@@ -199,15 +183,31 @@ void mqttLoop(){
    mqttIPClient.loop();
 }
 
+
+void irrigate(){
+  // flowMS => la bomba esta activa
+  digitalWrite(RELAY, 0);
+  delay(flowMS);
+  // 1 minuto - flowMS parado
+  digitalWrite(RELAY,1);
+  delay(deltaMS - flowMS);
+  // reduccion progresiva
+  if (flowMS < minDelta){
+    flowMS = defaultFlowMS;
+  } else {
+    flowMS = flowMS - (flowMS*deltaPerc);
+  }
+}
+
 void loop() {
   mqttLoop();
   // put your main code here, to run repeatedly:
-  sensorStatus = analogRead(34);
+  sensorStatus = analogRead(MOIST_SENSOR);
   // TODO: Si el valor es  == 4095 => Mandar 1 sino 0
   if (sensorStatus >= moistValue){
-    digitalWrite(14, 0);
+      irrigate();
   } else {
-    digitalWrite(14, 1);
+    digitalWrite(RELAY, 1);
   }
   delay(100);
 }
