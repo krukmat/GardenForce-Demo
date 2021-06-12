@@ -20,7 +20,8 @@ The stack selected:
 ## General Schema
 ![Schematics](https://github.com/krukmat/GardenForce-Demo/blob/159c5497d52ea9f4a9dd97e8ecaf703c78a2e915/images/GardenForce.jpeg)
 ##  Hardware
-![Schematics](https://github.com/krukmat/GardenForce-Demo/blob/dab6476364e0883ef06dd59ba2e45e5e8e7263f6/images/gardenforce-concept.jpg)
+![Schematics](https://github.com/krukmat/GardenForce-Demo/blob/7f40088fdd00eb0f9112b119c42a06c2868b97db/images/version2.jpg)
+![Schematics](https://github.com/krukmat/GardenForce-Demo/blob/7f40088fdd00eb0f9112b119c42a06c2868b97db/images/version2_internal.jpg)
 
 ## Salesforce
 ![Config](https://github.com/krukmat/GardenForce-Demo/blob/dab6476364e0883ef06dd59ba2e45e5e8e7263f6/images/salesforce-config.png)
