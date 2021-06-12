@@ -2,7 +2,6 @@
 
 name: CI
 
-name: Build & Deploy
 on:
   push:
     branches: [main]
@@ -19,8 +18,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
      
           script: |
-            cd /var/www/html/GardenForce-Demo/ 
-            git pull
             pkill forever.py
             pkill mqtt_daemon.py
+            systemctl reload apache2
+            cd /var/www/html/GardenForce-Demo/ 
+            git pull
             echo 'Deployment successful to digital ocean' 
