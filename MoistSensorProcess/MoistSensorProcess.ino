@@ -15,6 +15,9 @@ typedef struct shoot_on_demand {
 };
 shoot_on_demand esp_now_data;
 
+const String plantId = "PLANT_1";
+volatile int moistValue = 3200;
+
 TaskHandle_t taskSendStatus;
 
 void mqttCallback(char* topic, byte* payload, unsigned int length);
@@ -86,15 +89,22 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
   Serial.println("Mensaje -> " + incoming); 
 
   if (getValue(incoming,';',0) == plantId && getValue(incoming,';',3) == "MQTT"){
+    Serial.println("New valid message");
     if (getValue(incoming,';',2).toInt() > 0){
        String parameter = getValue(incoming,';',1);
-       if (parameter == "moist")
+       if (parameter == "moist"){
           moistValue = getValue(incoming,';',2).toInt();
+          Serial.print("Moist:");
+          Serial.println(moistValue);        
+       }
        if (parameter == "read_ms")
           readMs = getValue(incoming,';',2).toInt();
       
     }
-    espRequestScreenshotToCam();
+    //espRequestScreenshotToCam();
+  } else {
+    Serial.println(getValue(incoming,';',0));
+    Serial.println(getValue(incoming,';',3));
   }
 }
 
@@ -110,10 +120,14 @@ void taskSendStatusMethod( void * parameter) {
   String statusMsg;
   for(;;) {
     mqttLoop();
-    statusMsg = plantId+";"+String(sensorStatus);
-    statusMsg.toCharArray(msg,statusMsg.length()+1);
-    mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
-    delay(readMs);
+    if (sensorStatus > 0){
+      statusMsg = plantId+";"+String(sensorStatus);
+      statusMsg.toCharArray(msg,statusMsg.length()+1);
+      mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
+      delay(readMs);      
+    } else {
+      delay(300);
+    }
   }
 }
 
@@ -126,13 +140,13 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(MOIST_SENSOR,INPUT);
   pinMode(RELAY,OUTPUT);
   digitalWrite(RELAY, 1); // Disable by default
   
   Serial.println("The device started, now you can pair it with bluetooth!");
-  WiFi.mode(WIFI_AP_STA);
+  /*WiFi.mode(WIFI_AP_STA);
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
     return;
@@ -148,7 +162,7 @@ void setup() {
   if (esp_now_add_peer(&peerInfo) != ESP_OK){
     Serial.println("Failed to add peer");
     return;
-  }
+  }*/
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -203,11 +217,13 @@ void loop() {
   mqttLoop();
   // put your main code here, to run repeatedly:
   sensorStatus = analogRead(MOIST_SENSOR);
+  //Serial.println(moistValue);
   // TODO: Si el valor es  == 4095 => Mandar 1 sino 0
   if (sensorStatus >= moistValue){
       irrigate();
+      //digitalWrite(RELAY, 0);
   } else {
     digitalWrite(RELAY, 1);
   }
-  delay(100);
+  delay(300);
 }

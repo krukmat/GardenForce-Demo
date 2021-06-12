@@ -1,5 +1,6 @@
-const String plantId = "PLANT_1";
-const char* ssid = "MIWIFI_5G_2jJ5_EXT";
+
+//const char* ssid = "MIWIFI_5G_2jJ5_EXT";
+const char* ssid = "MIWIFI_2G_2jJ5";
 const char* password = "xvFYmqRv";
 
 const int MOIST_SENSOR = 34;
@@ -15,15 +16,14 @@ const int MQTT_RETRYMS = 5000;
 
 char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn"; 
 char msg[12];
-int moistValue = 3200;
 int readMs = 180000;
 int sensorStatus = 0;
 // riego incremental. Caudal/min
-int defaultFlowMS = 10000;
-int flowMS = 10000;
+int defaultFlowMS = 15000;
+int flowMS = 15000;
 int deltaMS = 60000;
 float deltaPerc = 0.50;
-int minDelta = 100;
+int minDelta = 300;
 
 // 10:52:1C:62:DB:60
 uint8_t broadcastAddress[] = {0x10, 0x52, 0x1C, 0x62, 0xDB, 0x60};
