@@ -19,9 +19,9 @@ jobs:
      
           script: |
             pkill python3
-            systemctl reload apache2
             cd /var/www/html/GardenForce-Demo/ 
             git pull
             cd python/
             nohup python3 ./forever.py > gardenforce.log &
+            systemctl reload apache2
             echo 'Deployment successful to digital ocean' 
