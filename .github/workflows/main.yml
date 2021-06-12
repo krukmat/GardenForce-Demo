@@ -23,5 +23,5 @@ jobs:
             cd /var/www/html/GardenForce-Demo/ 
             git pull
             cd python/
-            nohup python3 ./forever.py > alarmforce.log
+            python3 ./forever.py > gardenforce.log 
             echo 'Deployment successful to digital ocean' 
