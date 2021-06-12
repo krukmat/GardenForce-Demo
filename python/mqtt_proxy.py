@@ -31,7 +31,6 @@ def on_message(client, userdata, msg):
                     refresh = int(result[0]['refresh__c'])
                     flow=int(result[0]['flowMS__c']
 
-                    print(moist)
                     message = plant_id + ";moist;"+ str(moist) + ";MQTT"
                     client.publish("HPIbCG0C72lcw6g/input", message)
                     message = plant_id + ";read_ms;"+ str(refresh) + ";MQTT"
