@@ -12,6 +12,9 @@ def index():
     if  value == '':
         value = request.args.get('read_ms', '')
         parameter = 'read_ms'
+    if value == '':
+        value = request.args.get('flow_ms', '')
+        parameter = 'flow_ms'
         
     plantid = request.args.get('plant_id')
     message = plantid + ";" +  parameter +';'+value + ";MQTT"
