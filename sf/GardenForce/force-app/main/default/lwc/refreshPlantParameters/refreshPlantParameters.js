@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : Matias Kruk
  * @group             : 
- * @last modified on  : 06-06-2021
+ * @last modified on  : 06-12-2021
  * @last modified by  : Matias Kruk
  * Modifications Log 
  * Ver   Date         Author        Modification
@@ -11,12 +11,14 @@
 import { LightningElement, api, wire } from 'lwc';
 import updateMoist from '@salesforce/apex/RefreshPlantParametersCallout.updatePlantMoist';
 import updatePlantReadMs from '@salesforce/apex/RefreshPlantParametersCallout.updatePlantReadMs';
+import updatePlantFlowMS from '@salesforce/apex/RefreshPlantParametersCallout.updatePlantFlowMS';
 import { getRecord } from 'lightning/uiRecordApi';
 
 const FIELDS = [
     'Plant__c.PlantId__c',
     'Plant__c.moist__c',
-    'Plant__c.refresh__c'
+    'Plant__c.refresh__c',
+    'Plant__c.flowMS__c'
 ];
 
 export default class RefreshPlantParameters extends LightningElement {
@@ -36,20 +38,18 @@ export default class RefreshPlantParameters extends LightningElement {
         return this.plant.data.fields.refresh__c.value;
     }
 
+    flowMS() {
+        return this.plant.data.fields.flowMS__c.value;
+    }
+
     handleClick(){
        let plantLocal = this.plantId();
-       let parameter = this.moist();
-       // TODO: Agregar updatePlantReadMs
-        updateMoist({plant: plantLocal, parameter: parameter} ).then(response => {
+       let moist = this.moist();
+       let refresh = this.refresh();
+       let flowMS = this.flowMS();
+        Promise.all([updateMoist({plant: plantLocal, parameter: moist} ), updatePlantReadMs({plant: plantLocal, parameter: refresh} ), updatePlantFlowMS({plant: plantLocal, parameter: flowMS})]).then(response => {
             // TODO: MEnsaje todo OK
-            console.info('Success!!');
-            parameter = this.refresh();
-            updatePlantReadMs({plant: plantLocal, parameter: parameter} ).then(response => {
-                // TODO: MEnsaje todo OK
-                console.info('Success!!');
-            }).catch(error => {
-                console.log('Error: ' +error.body.message);
-            });
+            console.info(response);     
         }).catch(error => {
             console.log('Error: ' +error.body.message);
         });

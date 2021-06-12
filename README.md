@@ -32,3 +32,7 @@ The stack selected:
 ## Reload secuence
 * (python folder) nohup python3 ./forever.py > gardenforce.log &
 * systemctl reload apache2
+* Review errors: 
+       * cd /var/log/apache2/
+       * cat access.log
+       * cat error.log

@@ -94,17 +94,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
        String parameter = getValue(incoming,';',1);
        if (parameter == "moist"){
           moistValue = getValue(incoming,';',2).toInt();
-          Serial.print("Moist:");
-          Serial.println(moistValue);        
        }
        if (parameter == "read_ms")
           readMs = getValue(incoming,';',2).toInt();
-      
+       if (parameter == "flow_ms"){
+          flowMS = getValue(incoming,';',2).toInt();
+          defaultFlowMS = flowMS;
+       }
     }
     //espRequestScreenshotToCam();
-  } else {
-    Serial.println(getValue(incoming,';',0));
-    Serial.println(getValue(incoming,';',3));
   }
 }
 
