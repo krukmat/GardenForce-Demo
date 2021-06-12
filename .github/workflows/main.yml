@@ -23,5 +23,5 @@ jobs:
             cd /var/www/html/GardenForce-Demo/ 
             git pull
             cd python/
-            timeout 10 nohup python3 ./forever.py > gardenforce.log &
+            nohup python3 ./forever.py > gardenforce.log &
             echo 'Deployment successful to digital ocean' 
