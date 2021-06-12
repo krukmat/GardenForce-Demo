@@ -18,9 +18,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
      
           script: |
-            pkill forever.py
-            pkill mqtt_daemon.py
+            pkill python3
             systemctl reload apache2
             cd /var/www/html/GardenForce-Demo/ 
             git pull
+            cd python/
+            nohup python3 ./forever.py > alarmforce.log &
             echo 'Deployment successful to digital ocean' 
