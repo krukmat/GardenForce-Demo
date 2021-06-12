@@ -21,5 +21,6 @@ def index():
     if value and plantid:
         client = mqtt_proxy.connect_mqtt()
         mqtt_proxy.mqtt_publish(client, message)
-    return 'OK'
+        return 'OK'
+    return 'KO'
     
