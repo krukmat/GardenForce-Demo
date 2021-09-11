@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <PubSubClient.h>
-#include <esp_now.h>
+#include <WebServer.h>
 #include "GardenForce_consts.h"
 
 
@@ -19,6 +19,20 @@ const String plantId = "PLANT_1";
 volatile int moistValue = 3200;
 
 TaskHandle_t taskSendStatus;
+
+WebServer serv(80);
+void handleNotFound()
+{
+  String message = "Server is running!\n\n";
+  message += "URI: ";
+  message += serv.uri();
+  message += "\nMethod: ";
+  message += (serv.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += serv.args();
+  message += "\n";
+  serv.send(200, "text / plain", message);
+}
 
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
@@ -66,16 +80,6 @@ String getValue(String data, char separator, int index)
   return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-void espRequestScreenshotToCam(){
-  esp_now_data.shoot = true;
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &esp_now_data, sizeof(esp_now_data));
-  if (result == ESP_OK) {
-    Serial.println("Sent with success");
-  }
-  else {
-    Serial.println("Error sending the data");
-  }
-}
 
 void mqttCallback(char* topic, byte* payload, unsigned int length){
   String incoming = "";
@@ -118,6 +122,7 @@ void taskSendStatusMethod( void * parameter) {
   String statusMsg;
   for(;;) {
     mqttLoop();
+    
     if (sensorStatus > 0){
       statusMsg = plantId+";"+String(sensorStatus);
       statusMsg.toCharArray(msg,statusMsg.length()+1);
@@ -129,40 +134,32 @@ void taskSendStatusMethod( void * parameter) {
   }
 }
 
-// callback when data is sent
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("\r\nLast Packet Send Status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
-}
+// it wil set the static IP address to 192, 168, 10, 47
+IPAddress local_IP(192, 168, 1, 135);
+//it wil set the gateway static IP address to 192, 168, 2,2
+IPAddress gateway(192, 168, 1 ,1);
+
+// Following three settings are optional
+IPAddress subnet(255, 255, 0, 0);
+IPAddress primaryDNS(8, 8, 8, 8); 
+IPAddress secondaryDNS(8, 8, 4, 4);
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("STA Failed to configure");
+  }
   pinMode(MOIST_SENSOR,INPUT);
   pinMode(RELAY,OUTPUT);
   digitalWrite(RELAY, 1); // Disable by default
   
   Serial.println("The device started, now you can pair it with bluetooth!");
-  /*WiFi.mode(WIFI_AP_STA);
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
-  
-  esp_now_register_send_cb(OnDataSent);
-  esp_now_peer_info_t peerInfo;
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-  
-  //Add peer
-  if (esp_now_add_peer(&peerInfo) != ESP_OK){
-    Serial.println("Failed to add peer");
-    return;
-  }*/
-  WiFi.begin(ssid, password);
 
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -179,13 +176,17 @@ void setup() {
   bootUp();
 
    xTaskCreatePinnedToCore(
-      taskSendStatusMethod, /* Function to implement the task */
-      "taskSendStatus", /* Name of the task */
-      10000,  /* Stack size in words */
-      NULL,  /* Task input parameter */
-      0,  /* Priority of the task */
-      &taskSendStatus,  /* Task handle. */
-      0); /* Core where the task should run */
+      taskSendStatusMethod, 
+      "taskSendStatus", 
+      10000,  
+      NULL,  
+      0,  
+      &taskSendStatus,  
+      0); 
+ //Blynk.begin(blynk_auth, ssid, password);
+ serv.on("/hidrate", HTTP_GET, handle_hidrate);
+ serv.onNotFound(handleNotFound);
+ serv.begin();
 }
 
 void mqttLoop(){
@@ -195,33 +196,21 @@ void mqttLoop(){
    mqttIPClient.loop();
 }
 
-
-void irrigate(){
-  // flowMS => la bomba esta activa
+// This function will be called every time Slider Widget
+// in Blynk app writes values to the Virtual Pin 1
+void handle_hidrate(void)
+{
   digitalWrite(RELAY, 0);
   delay(flowMS);
   // 1 minuto - flowMS parado
   digitalWrite(RELAY,1);
-  delay(deltaMS - flowMS);
-  // reduccion progresiva
-  if (flowMS < minDelta){
-    flowMS = defaultFlowMS;
-  } else {
-    flowMS = flowMS - (flowMS*deltaPerc);
-  }
 }
 
+
+
 void loop() {
-  mqttLoop();
-  // put your main code here, to run repeatedly:
+  //
+  serv.handleClient();
+  //mqttLoop();
   sensorStatus = analogRead(MOIST_SENSOR);
-  //Serial.println(moistValue);
-  // TODO: Si el valor es  == 4095 => Mandar 1 sino 0
-  if (sensorStatus >= moistValue){
-      irrigate();
-      //digitalWrite(RELAY, 0);
-  } else {
-    digitalWrite(RELAY, 1);
-  }
-  delay(300);
 }

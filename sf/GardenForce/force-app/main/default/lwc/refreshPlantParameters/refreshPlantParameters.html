@@ -2,7 +2,7 @@
   @description       : 
   @author            : Matias Kruk
   @group             : 
-  @last modified on  : 05-19-2021
+  @last modified on  : 09-11-2021
   @last modified by  : Matias Kruk
   Modifications Log 
   Ver   Date         Author        Modification
@@ -10,14 +10,16 @@
 -->
 <template>
     <lightning-card title="Externo">
-        <lightning-layout>
-            <div class="slds-p-around_small">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
                 <lightning-button variant="brand" 
                     label="Actualizar parametros"
                     onclick={handleClick}>
                 </lightning-button>
-                <br/>
             </div>
-        </lightning-layout>
+            <div class="slds-col">
+                <c-hidrate-button></c-hidrate-button>
+            </div>
+        </div>
     </lightning-card>
 </template>

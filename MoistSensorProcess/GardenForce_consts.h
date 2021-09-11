@@ -16,14 +16,16 @@ const int MQTT_RETRYMS = 5000;
 
 char auth[] = "_Hk2RUSUh4uTDaL4468L7rrmxcds3rYn"; 
 char msg[12];
-int readMs = 180000;
+int readMs = 90000;
 int sensorStatus = 0;
 // riego incremental. Caudal/min
 int defaultFlowMS = 15000;
-int flowMS = 15000;
+int flowMS = 300;
 int deltaMS = 60000;
 float deltaPerc = 0.50;
 int minDelta = 300;
+
+char blynk_auth[] = "yEWTTtrrde6_IQxbi4L6TkP9bh_lCD0y";
 
 // 10:52:1C:62:DB:60
 uint8_t broadcastAddress[] = {0x10, 0x52, 0x1C, 0x62, 0xDB, 0x60};
