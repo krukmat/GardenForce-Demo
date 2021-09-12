@@ -6,5 +6,5 @@
   @last modified by  : Matias Kruk
 -->
 <aura:component implements="flexipage:availableForAllPageTypes" access="global" >
-	<img src="https://4551-93-176-144-146.ngrok.io/mjpeg/1" width="640"/>
+	<img src="https://camera.gardenforce.ngrok.io/mjpeg/1" width="640"/>
 </aura:component>
