@@ -20,7 +20,7 @@ int readMs = 90000;
 int sensorStatus = 0;
 // riego incremental. Caudal/min
 int defaultFlowMS = 15000;
-int flowMS = 300;
+int flowMS = 900;
 int deltaMS = 60000;
 float deltaPerc = 0.50;
 int minDelta = 300;
