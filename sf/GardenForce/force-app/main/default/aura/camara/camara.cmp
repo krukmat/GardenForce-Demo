@@ -2,9 +2,9 @@
   @description       : 
   @author            : Matias Kruk
   @group             : 
-  @last modified on  : 09-12-2021
+  @last modified on  : 09-14-2021
   @last modified by  : Matias Kruk
 -->
 <aura:component implements="flexipage:availableForAllPageTypes" access="global" >
-	<img src="https://camera.gardenforce.ngrok.io/mjpeg/1" width="640"/>
+	<img src="https://plantmera.ngrok.io/mjpeg/1" width="640"/>
 </aura:component>

@@ -115,6 +115,7 @@ void bootUp(){
   if (!mqttIPClient.connected()) {
       mqttReconnect();
    }
+  Serial.println("Connecting to mqtt");
   mqttIPClient.publish(mqtt_ip_topic_subscribe,msg);
 }
 
@@ -175,14 +176,14 @@ void setup() {
   mqttIPClient.setCallback(mqttCallback);
   bootUp();
 
-   xTaskCreatePinnedToCore(
+  xTaskCreatePinnedToCore(
       taskSendStatusMethod, 
       "taskSendStatus", 
       10000,  
       NULL,  
       0,  
       &taskSendStatus,  
-      0); 
+      0);
  //Blynk.begin(blynk_auth, ssid, password);
  serv.on("/hidrate", HTTP_GET, handle_hidrate);
  serv.onNotFound(handleNotFound);
@@ -211,6 +212,6 @@ void handle_hidrate(void)
 void loop() {
   //
   serv.handleClient();
-  //mqttLoop();
+  mqttLoop();
   sensorStatus = analogRead(MOIST_SENSOR);
 }
