@@ -20,19 +20,6 @@ volatile int moistValue = 3200;
 
 TaskHandle_t taskSendStatus;
 
-WebServer serv(80);
-void handleNotFound()
-{
-  String message = "Server is running!\n\n";
-  message += "URI: ";
-  message += serv.uri();
-  message += "\nMethod: ";
-  message += (serv.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += serv.args();
-  message += "\n";
-  serv.send(200, "text / plain", message);
-}
 
 void mqttCallback(char* topic, byte* payload, unsigned int length);
 void mqttReconnect();
@@ -105,6 +92,11 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
           flowMS = getValue(incoming,';',2).toInt();
           defaultFlowMS = flowMS;
        }
+    }else{
+      String parameter = getValue(incoming,';',1);
+      if (parameter == "hidrate"){
+            handle_hidrate();
+      }
     }
     //espRequestScreenshotToCam();
   }
@@ -185,9 +177,6 @@ void setup() {
       &taskSendStatus,  
       0);
  //Blynk.begin(blynk_auth, ssid, password);
- serv.on("/hidrate", HTTP_GET, handle_hidrate);
- serv.onNotFound(handleNotFound);
- serv.begin();
 }
 
 void mqttLoop(){
@@ -211,7 +200,6 @@ void handle_hidrate(void)
 
 void loop() {
   //
-  serv.handleClient();
   mqttLoop();
   sensorStatus = analogRead(MOIST_SENSOR);
 }

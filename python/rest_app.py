@@ -23,4 +23,16 @@ def index():
         mqtt_proxy.mqtt_publish(client, message)
         return 'OK'
     return 'KO'
+
+@app.route('/hidrate')
+def hidrate():
+    plantid = request.args.get('plant_id')
+    message = plantid + ";hidrate;0;MQTT"
+    if plantid:
+        client = mqtt_proxy.connect_mqtt()
+        mqtt_proxy.mqtt_publish(client, message)
+        return 'OK'
+    return 'KO'
+
+
     
