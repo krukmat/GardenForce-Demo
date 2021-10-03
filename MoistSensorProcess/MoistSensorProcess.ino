@@ -99,6 +99,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
       if (parameter == "hidrate"){
             Serial.println("hidrate");
             handle_hidrate();
+            delay(flowMS);
       }
     }
     //espRequestScreenshotToCam();

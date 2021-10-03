@@ -68,4 +68,10 @@ public with sharing class RefreshPlantParametersCallout {
         }
         return null;
     }
+
+    public static void hidrate(String plant, Integer numberOfTimes){
+            for (Integer i = 0; i < numberOfTimes; i++){
+                RefreshPlantParametersCallout.hidrate(plant);
+            }
+    }
 }
