@@ -5,6 +5,8 @@
 #include <WebServer.h>
 #include "GardenForce_consts.h"
 
+const String plantId = "PLANT_1";
+
 
 WiFiClient mqttIPClientWifi;
 PubSubClient mqttIPClient( mqttIPClientWifi );
@@ -15,7 +17,6 @@ typedef struct shoot_on_demand {
 };
 shoot_on_demand esp_now_data;
 
-const String plantId = "PLANT_1";
 volatile int moistValue = 3200;
 
 TaskHandle_t taskSendStatus;
@@ -94,7 +95,9 @@ void mqttCallback(char* topic, byte* payload, unsigned int length){
        }
     }else{
       String parameter = getValue(incoming,';',1);
+      Serial.println(parameter);
       if (parameter == "hidrate"){
+            Serial.println("hidrate");
             handle_hidrate();
       }
     }
