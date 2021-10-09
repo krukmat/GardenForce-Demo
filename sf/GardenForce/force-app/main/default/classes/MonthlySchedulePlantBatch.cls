@@ -5,10 +5,10 @@
  * @last modified on  : 10-09-2021
  * @last modified by  : Matias Kruk
 **/
-public with sharing class SchedulePlantBatch  implements Database.Batchable<sObject>, Schedulable, Database.Stateful, Database.AllowsCallouts{
+public with sharing class MonthlySchedulePlantBatch implements Database.Batchable<sObject>, Schedulable, Database.Stateful, Database.AllowsCallouts{
     private String frequency;
 
-    public SchedulePlantBatch(String strParam) {
+    public MonthlySchedulePlantBatch(String strParam) {
         this.frequency = strParam;
     }
     public List<Schedule__c> start(Database.BatchableContext bc){
@@ -25,12 +25,12 @@ public with sharing class SchedulePlantBatch  implements Database.Batchable<sObj
     }
 
     public void execute(SchedulableContext ctx){
-        Database.executeBatch(new SchedulePlantBatch('Daily'));
+        Database.executeBatch(new MonthlySchedulePlantBatch('Monthly'));
     }
 
     public static void configureSchedule(){
-        SchedulePlantBatch p = new SchedulePlantBatch('Daily');
-        String sch = '0 07 14 * * ?';
-        system.schedule('Hidrate daily scheduler', sch, p);
+        MonthlySchedulePlantBatch p = new MonthlySchedulePlantBatch('Monthly');
+        String sch = '0 0 14 9 * ?';
+        system.schedule('Hidrate monthly scheduler', sch, p);
     }
 }
