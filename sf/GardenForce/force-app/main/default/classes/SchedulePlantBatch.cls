@@ -26,7 +26,7 @@ public with sharing class SchedulePlantBatch  implements Database.Batchable<sObj
 
     public static void configureSchedule(){
         SchedulePlantBatch p = new SchedulePlantBatch();
-        String sch = '0 0 13 * * ?';
+        String sch = '0 10 13 * * ?';
         system.schedule('Hidrate scheduler', sch, p);
     }
 }
