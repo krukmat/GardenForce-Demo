@@ -2,13 +2,13 @@
  * @description       : 
  * @author            : Matias Kruk
  * @group             : 
- * @last modified on  : 05-30-2021
+ * @last modified on  : 10-10-2021
  * @last modified by  : Matias Kruk
  * Modifications Log 
  * Ver   Date         Author        Modification
  * 1.0   05-29-2021   Matias Kruk   Initial Version
 **/
-import { LightningElement, wire,api } from 'lwc';
+import { LightningElement, wire,api,track } from 'lwc';
 import getMoistureHistory from '@salesforce/apex/PlanReportApex.getMoistureHistory';
 import ChartJS from '@salesforce/resourceUrl/chartjs_v280';
 import { loadScript } from 'lightning/platformResourceLoader';
@@ -20,7 +20,7 @@ export default class PlantReport extends LightningElement {
     chart;
     chartjsInitialized = false;
     maxvalue;
-    dateFieldValue;
+    @track dateFieldValue = null;
     //configuration variable
     config = {
         type: 'line',
@@ -56,6 +56,15 @@ export default class PlantReport extends LightningElement {
             }
         }
     };
+    
+    connectedCallback(){
+        let currentDate = new Date();
+        let cDay = currentDate.getDate();
+        let cMonth = currentDate.getMonth() + 1;
+        let cYear = currentDate.getFullYear();
+        this.dateFieldValue = cYear + '-' + cMonth + '-'  + cDay;  
+        this.wiredPlant();
+    }
 
     handleDateChange(event){
         this.dateFieldValue = event.target.value;
